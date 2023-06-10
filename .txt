@@ -1,0 +1,5 @@
+Get started:
+https://doc.qt.io/qtforpython-6/quickstart.html#quick-start
+
+QT Modules and APIs:
+https://doc.qt.io/qtforpython-6/
