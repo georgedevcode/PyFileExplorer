@@ -3,3 +3,15 @@ https://doc.qt.io/qtforpython-6/quickstart.html#quick-start
 
 QT Modules and APIs:
 https://doc.qt.io/qtforpython-6/
+
+QFilesystem Model:
+https://doc.qt.io/qtforpython-5/PySide2/QtWidgets/QFileSystemModel.html
+
+Displaying Data Using a Tree Widget
+https://doc.qt.io/qtforpython-6/tutorials/basictutorial/treewidget.html
+
+QTreeView
+https://doc.qt.io/qtforpython-5/PySide2/QtWidgets/QTreeView.html
+
+QFileSystemModel
+https://doc.qt.io/qtforpython-5/PySide2/QtWidgets/QFileSystemModel.html
