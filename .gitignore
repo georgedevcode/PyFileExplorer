@@ -3,3 +3,6 @@ venv/
 /Scripts/
 /Lib/
 pyvenv.cfg
+QComponents/__pycache__/MainMenu.cpython-310.pyc
+QComponents/__pycache__/MainWindow.cpython-310.pyc
+QComponents/__pycache__/MainWindow.cpython-310.pyc
