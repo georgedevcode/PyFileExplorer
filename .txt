@@ -15,3 +15,6 @@ https://doc.qt.io/qtforpython-5/PySide2/QtWidgets/QTreeView.html
 
 QFileSystemModel
 https://doc.qt.io/qtforpython-5/PySide2/QtWidgets/QFileSystemModel.html
+
+Menu:
+https://realpython.com/python-menus-toolbars/#creating-menu-bars
