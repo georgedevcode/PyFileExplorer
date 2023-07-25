@@ -1,25 +1,15 @@
+import os
 import sys
-import random
-from PySide6 import QtCore, QtWidgets, QtGui
+from PyQt6 import QtCore, QtGui, QtWidgets, uic
 
-class MyWidget(QtWidgets.QWidget):
-    def __init__(self):
-        super().__init__()
-        self.hello = ["Hallo Welt", "Hei maailma", "Hola Mundo", "Привет мир"]
-        self.button = QtWidgets.QPushButton("Click me!")
-        self.text = QtWidgets.QLabel("Hello World!", alignment=QtCore.Qt.AlignCenter)
-        self.layout = QtWidgets.QVBoxLayout(self)
-        self.layout.addWidget(self.text)
-        self.layout.addWidget(self.button)
-        self.button.clicked.connect(self.magic)
+class PyFileExplorer(QtWidgets.QMainWindow):
+        def __init__(self):
+            super(PyFileExplorer, self).__init__()
+            self.ui_path = os.path.dirname(os.path.abspath(__file__))
+            uic.load_ui.loadUi(os.path.join(self.ui_path,"PyFileExplorer.ui"), self)
 
-    @QtCore.Slot()
-    def magic(self):
-        self.text.setText(random.choice(self.hello))
 
-if __name__ == "__main__":
-    app = QtWidgets.QApplication([])
-    widget = MyWidget()
-    widget.resize(800,800)
-    widget.show()
-    sys.exit(app.exec_())
+app = QtWidgets.QApplication(sys.argv)
+PyFileExplorer = PyFileExplorer()
+PyFileExplorer.show()
+sys.exit(app.exec_())
