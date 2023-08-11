@@ -9,13 +9,16 @@ from pathlib import Path
 from PyQt6.QtWidgets import QApplication, QMainWindow, QListView, QMessageBox, QMenu, QInputDialog
 from PyQt6.QtCore import QDir, QModelIndex
 from PyQt6.QtGui import QDesktopServices
+from cryptography.fernet import Fernet
+from dotenv import load_dotenv
 
 class PyFileExplorer(QtWidgets.QMainWindow):
-
+        # User home directory on the system
         HOME_PATH = Path.home().as_posix()
         # Field to keep track on the previous index
         PREV_INDEX_FILE_VIEW = HOME_PATH
-        
+        #Fernet Object containing the Fernet key
+        FERNET = None
 
         def __init__(self):
             super(PyFileExplorer, self).__init__()
@@ -49,6 +52,7 @@ class PyFileExplorer(QtWidgets.QMainWindow):
 
             # Setting up the File menu options
             self.CreateFolderMenuAction = self.MenuFile.addAction("Crear Carpeta")
+            self.CreateFolderDeleteMenuAction = self.MenuFile.addAction("Eliminar Carpeta")
             self.PlainFileMenuAction = self.MenuFile.addAction("Crear Archivo Plano")
             self.ModifyPlainFileMenuAction = self.MenuFile.addAction("Modificar Archivo Plano")
             self.DeletePlainFileMenuAction = self.MenuFile.addAction("Eliminar Archivo Plano")
@@ -61,11 +65,24 @@ class PyFileExplorer(QtWidgets.QMainWindow):
             self.FileViewWidget.doubleClicked.connect(self.MouseDoubleClickOpenFileFolders)
             self.PlainFileMenuAction.triggered.connect(self.CreatePlainTextFile)
             self.CreateFolderMenuAction.triggered.connect(self.CreateFolder)
+            self.CreateFolderMenuAction.triggered.connect(self.DeleteFolder)
             self.ModifyPlainFileMenuAction.triggered.connect(self.ModifyPlainTextFile)
             self.DeletePlainFileMenuAction.triggered.connect(self.DeleteFile)
             self.EncryptionPlainFileMenuAction.triggered.connect(self.EncryptPlainTextFile)
             self.DecryptionPlainFileMenuAction.triggered.connect(self.DecryptPlainTextFile)
             self.SeeFilesInvetoryMenuAction.triggered.connect(self.SeeFilesInvetory)
+        
+        # Initialzing the Fernet key
+        # This is needed in order to encrypt and decrypt the data
+        def InitializeFernet(self):
+            if load_dotenv():
+                self.FERNET_KEY = os.environ.get("FERNET_KEY").encode()
+            else:
+               # Generate a new Fernet key
+                self.FERNET_KEY = Fernet.generate_key().decode()
+                # Set the encoded key as an environment variable
+                os.environ['FERNET_KEY'] = self.FERNET_KEY
+            self.FERNET = Fernet(self.FERNET_KEY)
             
         def create_file(self, filename):
             current_path = self.model.rootPath()
@@ -122,6 +139,9 @@ class PyFileExplorer(QtWidgets.QMainWindow):
 
         def CreateFolder(self):
              print("Folder created")
+
+        def DeleteFolder(self):
+            print("Folder deleted")
         
         def ModifyPlainTextFile(self):
             print("File Modified")
@@ -136,7 +156,16 @@ class PyFileExplorer(QtWidgets.QMainWindow):
                 self.delete_file(filename)
         
         def EncryptPlainTextFile(self):
-             print("File Encrypted")
+            print("File Encrypted")
+            filename, ok = QInputDialog.getText(self, 'Encriptar Archivo', 'Ingrese el nombre del archivo a encriptar:')
+            if ok and filename:
+                if self.file_exists(filename):
+                    with open(filename, 'wrb') as file:
+                        file_content = file.read()
+                        file_content_encrypted = self.FERNET.encrypt(file_content)
+                        file.write(file_content_encrypted)
+                        file.close()
+
         
         def DecryptPlainTextFile(self):
              print("File Decrypted")
@@ -176,5 +205,6 @@ class PyFileExplorer(QtWidgets.QMainWindow):
 if __name__ == "__main__":
     app = QtWidgets.QApplication(sys.argv)
     PyFileExplorer = PyFileExplorer()
+    PyFileExplorer.InitializeFernet()
     PyFileExplorer.show()
     app.exec()
