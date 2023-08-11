@@ -116,6 +116,11 @@
    <addaction name="menuHelp"/>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
+  <action name="CrearArchivoPlano">
+   <property name="text">
+    <string>Crear Archivo Plano</string>
+   </property>
+  </action>
  </widget>
  <resources/>
  <connections/>

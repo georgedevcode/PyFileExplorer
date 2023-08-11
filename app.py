@@ -27,6 +27,8 @@ class PyFileExplorer(QtWidgets.QMainWindow):
             self.SearchFileWidget = self.findChild(QtWidgets.QLineEdit, "SearchFileWidget")
             self.HomeButton = self.findChild(QtWidgets.QPushButton, "HomeButton")
             self.ReturnButton = self.findChild(QtWidgets.QPushButton, "ReturnButton")
+            self.MenuBar = self.findChild(QtWidgets.QMenuBar, "menubar")
+            self.MenuFile = self.MenuBar.findChild(QtWidgets.QMenu, "menuFile")
             self.SearchButton.clicked.connect(self.SearchButtonClickEvent)
                         
             # Setting up the File View Tree
@@ -45,9 +47,27 @@ class PyFileExplorer(QtWidgets.QMainWindow):
             self.FileViewWidget.setResizeMode(self.FileViewWidget.ResizeMode.Adjust)
             self.FileViewWidget.setMovement(self.FileViewWidget.Movement.Free)
 
+            # Setting up the File menu options
+            self.CreateFolderMenuAction = self.MenuFile.addAction("Crear Carpeta")
+            self.PlainFileMenuAction = self.MenuFile.addAction("Crear Archivo Plano")
+            self.ModifyPlainFileMenuAction = self.MenuFile.addAction("Modificar Archivo Plano")
+            self.DeletePlainFileMenuAction = self.MenuFile.addAction("Eliminar Archivo Plano")
+            self.EncryptionPlainFileMenuAction = self.MenuFile.addAction("Encriptar Archivo Plano")
+            self.DecryptionPlainFileMenuAction = self.MenuFile.addAction("Desencriptar Archivo Plano")
+            self.SeeFilesInvetoryMenuAction = self.MenuFile.addAction("Ver inventario de archivos")
+           
             #slots
             self.HomeButton.clicked.connect(self.HomeButtonClickEvent)
             self.FileViewWidget.doubleClicked.connect(self.MouseDoubleClickOpenFileFolders)
+            self.PlainFileMenuAction.triggered.connect(self.CreatePlainTextFile)
+            self.CreateFolderMenuAction.triggered.connect(self.CreateFolder)
+            self.ModifyPlainFileMenuAction.triggered.connect(self.ModifyPlainTextFile)
+            self.DeletePlainFileMenuAction.triggered.connect(self.DeleteFile)
+            self.EncryptionPlainFileMenuAction.triggered.connect(self.EncryptPlainTextFile)
+            self.DecryptionPlainFileMenuAction.triggered.connect(self.DecryptPlainTextFile)
+            self.SeeFilesInvetoryMenuAction.triggered.connect(self.SeeFilesInvetory)
+
+            
 
 #Rodolfo
             # Crear el menú
@@ -149,6 +169,28 @@ class PyFileExplorer(QtWidgets.QMainWindow):
         def HomeButtonClickEvent(self):
              self.model.setRootPath(self.HOME_PATH)
              self.FileViewWidget.setRootIndex(self.model.index(self.HOME_PATH))
+        
+        def CreatePlainTextFile(self):
+             print("File created")
+
+        def CreateFolder(self):
+             print("Folder created")
+        
+        def ModifyPlainTextFile(self):
+             print("File Modified")
+
+        def DeleteFile(self):
+             print("File Deleted")
+        
+        def EncryptPlainTextFile(self):
+             print("File Encrypted")
+        
+        def DecryptPlainTextFile(self):
+             print("File Decrypted")
+        
+        def SeeFilesInvetory(self):
+             print("Showing Files Invetory")
+        
 
         def SearchButtonClickEvent(self):
             search_text = self.SearchFileWidget.text()
