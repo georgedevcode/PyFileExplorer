@@ -70,12 +70,10 @@ class PyFileExplorer(QtWidgets.QMainWindow):
         def create_file(self, filename):
             current_path = self.model.rootPath()
             file_path = os.path.join(current_path, filename)
-    
             if not os.path.exists(file_path):
                 with open(file_path, 'w') as new_file:
                     pass  
-            
-                self.model.refresh(self.model.index(current_path))
+                self.model.layoutChanged.emit()
         
         def file_exists(self, filename):
             current_path = self.model.rootPath()
@@ -86,37 +84,31 @@ class PyFileExplorer(QtWidgets.QMainWindow):
             if not self.file_exists(filename):
                 QMessageBox.warning(self, 'Archivo no encontrado', f'El archivo "{filename}" no existe en este directorio.')
             return
-    
-            current_path = self.model.rootPath()
-            file_path = os.path.join(current_path, filename)
-
-            self.model.refresh(self.model.index(current_path))
 
         def delete_file(self, filename):
             current_path = self.model.rootPath()
             file_path = os.path.join(current_path, filename)
-    
             if os.path.exists(file_path):
                 try:
                     os.remove(file_path)
                     # Refresca la vista para reflejar los cambios
-                    self.model.refresh(self.model.index(current_path))
+                    self.model.layoutChanged.emit()
                 except OSError as e:
                     QMessageBox.critical(self, 'Error al Eliminar', f"No se pudo eliminar el archivo '{filename}': {e}")
             else:
-                    QMessageBox.warning(self, 'Archivo no Encontrado', f"El archivo '{filename}' no existe.")
+                QMessageBox.warning(self, 'Archivo no Encontrado', f"El archivo '{filename}' no existe.")
 
         def MouseDoubleClickOpenFileFolders(self, index):
-                file_info = self.model.fileInfo(index)
-                if file_info.isDir():
-                    # If it's a folder, open it
-                    folder_path = file_info.absoluteFilePath()
-                    self.model.setRootPath(folder_path)
-                    self.FileViewWidget.setRootIndex(self.model.index(folder_path))
-                else:
-                    # If it's a file, open it with the default application
-                    file_path = file_info.filePath()
-                    QDesktopServices.openUrl(QUrl.fromLocalFile(file_path))
+            file_info = self.model.fileInfo(index)
+            if file_info.isDir():
+                # If it's a folder, open it
+                folder_path = file_info.absoluteFilePath()
+                self.model.setRootPath(folder_path)
+                self.FileViewWidget.setRootIndex(self.model.index(folder_path))
+            else:
+                # If it's a file, open it with the default application
+                file_path = file_info.filePath()
+                QDesktopServices.openUrl(QUrl.fromLocalFile(file_path))
         
         def HomeButtonClickEvent(self):
              self.model.setRootPath(self.HOME_PATH)
