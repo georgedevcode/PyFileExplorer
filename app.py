@@ -26,6 +26,7 @@ class PyFileExplorer(QtWidgets.QMainWindow):
             self.SearchFileWidget = self.findChild(QtWidgets.QLineEdit, "SearchFileWidget")
             self.HomeButton = self.findChild(QtWidgets.QPushButton, "HomeButton")
             self.ReturnButton = self.findChild(QtWidgets.QPushButton, "ReturnButton")
+            self.SearchButton.clicked.connect(self.SearchButtonClickEvent)
 
             # Setting up the File View Tree
             self.model = QFileSystemModel()
@@ -46,7 +47,7 @@ class PyFileExplorer(QtWidgets.QMainWindow):
             #slots
             self.HomeButton.clicked.connect(self.HomeButtonClickEvent)
             self.FileViewWidget.doubleClicked.connect(self.MouseDoubleClickOpenFileFolders)
-        
+
         def MouseDoubleClickOpenFileFolders(self, index):
                 file_info = self.model.fileInfo(index)
                 if file_info.isDir():
@@ -63,6 +64,31 @@ class PyFileExplorer(QtWidgets.QMainWindow):
              self.model.setRootPath(self.HOME_PATH)
              self.FileViewWidget.setRootIndex(self.model.index(self.HOME_PATH))
 
+        def SearchButtonClickEvent(self):
+            search_text = self.SearchFileWidget.text()
+            if search_text:
+               current_path = self.model.rootPath()
+               self.model.setNameFilters([f"*{search_text}*"])
+               self.model.setRootPath(current_path)
+               self.FileViewWidget.setRootIndex(self.model.index(current_path))
+
+               # Hide non-matching files
+               for row in range(self.model.rowCount(self.FileViewWidget.rootIndex())):
+                   index = self.model.index(row, 0, self.FileViewWidget.rootIndex())
+                   file_info = self.model.fileInfo(index)
+                   if not file_info.fileName().lower().startswith(search_text.lower()):
+                      self.FileViewWidget.setRowHidden(row, True)
+                   else:
+                      self.FileViewWidget.setRowHidden(row, False)
+            else:
+                 current_path = self.model.rootPath()
+                 self.model.setNameFilters([])
+                 self.model.setRootPath(current_path)
+                 self.FileViewWidget.setRootIndex(self.model.index(current_path))
+                 for row in range(self.model.rowCount(self.FileViewWidget.rootIndex())):
+                     self.FileViewWidget.setRowHidden(row, self.FileViewWidget.rootIndex(), False)      
+
+                     #Falta corregir la búsqueda de documentos dentro de carpetas   
 
 if __name__ == "__main__":
     app = QtWidgets.QApplication(sys.argv)
