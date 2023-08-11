@@ -66,11 +66,6 @@ class PyFileExplorer(QtWidgets.QMainWindow):
             self.EncryptionPlainFileMenuAction.triggered.connect(self.EncryptPlainTextFile)
             self.DecryptionPlainFileMenuAction.triggered.connect(self.DecryptPlainTextFile)
             self.SeeFilesInvetoryMenuAction.triggered.connect(self.SeeFilesInvetory)
-
-        def mousePressEvent(self, event):
-            if event.button() == Qt.RightButton:
-                # Mostrar el menú en la posición del cursor
-                self.menu.exec_(event.globalPos())
             
         def create_file(self, filename):
             current_path = self.model.rootPath()
@@ -157,6 +152,8 @@ class PyFileExplorer(QtWidgets.QMainWindow):
         def SeeFilesInvetory(self):
              print("Showing Files Invetory")
         
+        def SaveFileOnInventory(self):
+            print("Saving File On Inventory")
 
         def SearchButtonClickEvent(self):
             search_text = self.SearchFileWidget.text()
