@@ -67,37 +67,10 @@ class PyFileExplorer(QtWidgets.QMainWindow):
             self.DecryptionPlainFileMenuAction.triggered.connect(self.DecryptPlainTextFile)
             self.SeeFilesInvetoryMenuAction.triggered.connect(self.SeeFilesInvetory)
 
-            
-
-#Rodolfo
-            # Crear el menú
-            self.menu = QMenu(self)
-
-            # Agregar acciones al menú
-            self.action1 = self.menu.addAction("Crear Archivo")
-            self.action2 = self.menu.addAction("Modificar Archivo")
-            self.action3 = self.menu.addAction("Eliminar Archivo")
-
-            # Conectar las acciones a sus respectivas funciones
-            self.action1.triggered.connect(self.create_new_file)
-            self.action2.triggered.connect(self.modify_existing_file)
-            self.action3.triggered.connect(self.delete_existing_file)
-            #fin
-            
-#Rodolfo
         def mousePressEvent(self, event):
             if event.button() == Qt.RightButton:
                 # Mostrar el menú en la posición del cursor
                 self.menu.exec_(event.globalPos())
-
-        def on_action1_triggered(self):
-            self.create_new_file()
-
-        def on_action2_triggered(self):
-            self.modify_file()
-            
-        def on_action3_triggered(self):
-            print("Acción 3")   
             
         def create_file(self, filename):
             current_path = self.model.rootPath()
@@ -108,11 +81,6 @@ class PyFileExplorer(QtWidgets.QMainWindow):
                     pass  
             
                 self.model.refresh(self.model.index(current_path))
-        
-        def create_new_file(self):
-            filename, ok = QInputDialog.getText(self, 'Crear Archivo', 'Ingrese el nombre del archivo:')
-            if ok and filename:
-                self.create_file(filename)
         
         def file_exists(self, filename):
             current_path = self.model.rootPath()
@@ -129,11 +97,6 @@ class PyFileExplorer(QtWidgets.QMainWindow):
 
             self.model.refresh(self.model.index(current_path))
 
-        def modify_existing_file(self):
-            filename, ok = QInputDialog.getText(self, 'Modificar Archivo', 'Ingrese el nombre del archivo a modificar:')
-            if ok and filename:
-                self.modify_file(filename)
-
         def delete_file(self, filename):
             current_path = self.model.rootPath()
             file_path = os.path.join(current_path, filename)
@@ -147,12 +110,6 @@ class PyFileExplorer(QtWidgets.QMainWindow):
                     QMessageBox.critical(self, 'Error al Eliminar', f"No se pudo eliminar el archivo '{filename}': {e}")
             else:
                     QMessageBox.warning(self, 'Archivo no Encontrado', f"El archivo '{filename}' no existe.")
-
-        def delete_existing_file(self):
-            filename, ok = QInputDialog.getText(self, 'Eliminar Archivo', 'Ingrese el nombre del archivo a eliminar:')
-            if ok and filename:
-                self.delete_file(filename)
-#fin
 
         def MouseDoubleClickOpenFileFolders(self, index):
                 file_info = self.model.fileInfo(index)
@@ -171,16 +128,25 @@ class PyFileExplorer(QtWidgets.QMainWindow):
              self.FileViewWidget.setRootIndex(self.model.index(self.HOME_PATH))
         
         def CreatePlainTextFile(self):
-             print("File created")
+            print("File created")
+            filename, ok = QInputDialog.getText(self, 'Crear Archivo', 'Ingrese el nombre del archivo:')
+            if ok and filename:
+                self.create_file(filename)
 
         def CreateFolder(self):
              print("Folder created")
         
         def ModifyPlainTextFile(self):
-             print("File Modified")
+            print("File Modified")
+            filename, ok = QInputDialog.getText(self, 'Modificar Archivo', 'Ingrese el nombre del archivo a modificar:')
+            if ok and filename:
+                self.modify_file(filename)
 
         def DeleteFile(self):
-             print("File Deleted")
+            print("File Deleted")
+            filename, ok = QInputDialog.getText(self, 'Eliminar Archivo', 'Ingrese el nombre del archivo a eliminar:')
+            if ok and filename:
+                self.delete_file(filename)
         
         def EncryptPlainTextFile(self):
              print("File Encrypted")
