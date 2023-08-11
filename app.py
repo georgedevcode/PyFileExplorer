@@ -76,12 +76,15 @@ class PyFileExplorer(QtWidgets.QMainWindow):
         # This is needed in order to encrypt and decrypt the data
         def InitializeFernet(self):
             if load_dotenv():
-                self.FERNET_KEY = os.environ.get("FERNET_KEY").encode()
+                enconded_key = os.environ.get("FERNET_KEY")
+                self.FERNET_KEY = enconded_key.encode()
             else:
                # Generate a new Fernet key
-                self.FERNET_KEY = Fernet.generate_key().decode()
+                key= Fernet.generate_key()
+                self.FERNET_KEY = key.decode()
                 # Set the encoded key as an environment variable
-                os.environ['FERNET_KEY'] = self.FERNET_KEY
+                os.environ["FERNET_KEY"]= self.FERNET_KEY
+                # os.environ['FERNET_KEY'] = self.FERNET_KEY
             self.FERNET = Fernet(self.FERNET_KEY)
             
         def create_file(self, filename):
@@ -166,7 +169,6 @@ class PyFileExplorer(QtWidgets.QMainWindow):
                         file.write(file_content_encrypted)
                         file.close()
 
-        
         def DecryptPlainTextFile(self):
              print("File Decrypted")
         
