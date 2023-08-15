@@ -1,12 +1,10 @@
-Nombre: Documento1
-Referencia: REF001
-Fecha: 2023-08-04
-Descripcion: Documento de ejemplo 1
-Ubicacion: Carpeta A
---------------------
-Nombre: Documento2
-Referencia: REF002
-Fecha: 2023-08-04
-Descripcion: Documento de ejemplo 2
-Ubicacion: Carpeta B
---------------------
+Nombre Archivo: Prueba 5.txt
+Directorio: C:/Users/jocerdas/Prueba/Prueba 5.txt
+Creado en: Tue Aug 15 12:53:21 2023
+Ultima modificaion: Tue Aug 15 12:53:21 2023
+================================
+Nombre Archivo: Prueba 6.txt
+Directorio: C:/Users/jocerdas/Prueba/Prueba 6.txt
+Creado en: Tue Aug 15 12:54:34 2023
+Ultima modificaion: Tue Aug 15 12:54:34 2023
+================================

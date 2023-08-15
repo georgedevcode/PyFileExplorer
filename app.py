@@ -2,7 +2,7 @@ import os
 import sys
 import shutil
 from PyQt6 import QtCore, QtGui, QtWidgets, uic
-from PyQt6.QtCore import QUrl
+from PyQt6.QtCore import QUrl, QFileInfo
 from PyQt6.QtCore import QEvent
 from PyQt6.QtCore import Qt
 from PyQt6.QtGui import QFileSystemModel, QMouseEvent, QDesktopServices, QPointingDevice
@@ -79,6 +79,7 @@ class PyFileExplorer(QtWidgets.QMainWindow):
             file_path = os.path.join(current_path, filename)
             if not os.path.exists(file_path):
                 with open(file_path, 'w') as new_file:
+                    self.SaveFileOnInventory(file_path)
                     pass  
                 self.model.layoutChanged.emit()
 
@@ -227,8 +228,21 @@ class PyFileExplorer(QtWidgets.QMainWindow):
         def SeeFilesInvetory(self):
              print("Showing Files Invetory")
         
-        def SaveFileOnInventory(self):
+        def SaveFileOnInventory(self, filepath):
             print("Saving File On Inventory")
+            file_info = QFileInfo(filepath)
+            file_name = file_info.fileName()
+            file_dir = file_info.filePath()
+            file_create_day = file_info.birthTime().toString(format=Qt.DateFormat.TextDate)
+            last_day_modified = file_info.lastModified().toString(format=Qt.DateFormat.TextDate)
+
+            with open("registro_documentos.txt", "a") as file:
+                        file.write(f"Nombre Archivo: {file_name}\n")
+                        file.write(f"Directorio: {file_dir}\n")
+                        file.write(f"Creado en: {file_create_day}\n")
+                        file.write(f"Ultima modificaion: {last_day_modified}")
+                        file.write("\n================================\n")
+                        file.close()
 
         def SearchButtonClickEvent(self):
             search_text = self.SearchFileWidget.text()
