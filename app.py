@@ -1,19 +1,18 @@
 import os
 import sys
 import shutil
-import subprocess as sbp
-from PyQt6 import QtCore, QtGui, QtWidgets, uic
-from PyQt6.QtCore import QUrl, QFileInfo
-from PyQt6.QtCore import QEvent
-from PyQt6.QtCore import Qt
-from PyQt6.QtGui import QFileSystemModel, QMouseEvent, QDesktopServices, QPointingDevice
 from pathlib import Path
-from PyQt6.QtWidgets import QApplication, QMainWindow, QListView, QMessageBox, QMenu, QInputDialog
-from PyQt6.QtCore import QDir, QModelIndex
-from PyQt6.QtGui import QDesktopServices
+import subprocess as sbp
+from PyQt6.QtCore import Qt
+from PyQt6.QtCore import QEvent
 from cryptography.fernet import Fernet
+from PyQt6.QtCore import QUrl, QFileInfo
+from PyQt6.QtGui import QDesktopServices
+from PyQt6.QtCore import QDir, QModelIndex
+from PyQt6 import QtCore, QtGui, QtWidgets, uic
 from QComponents.ModifyPlainText import ModifyPlainTextWindow
-
+from PyQt6.QtGui import QFileSystemModel, QMouseEvent, QDesktopServices, QPointingDevice
+from PyQt6.QtWidgets import QApplication, QMainWindow, QListView, QMessageBox, QMenu, QInputDialog
 class PyFileExplorer(QtWidgets.QMainWindow):
         # User home directory on the system
         HOME_PATH = Path.home().as_posix()
