@@ -1,5 +1,6 @@
 import os
 import sys
+import shutil
 from PyQt6 import QtCore, QtGui, QtWidgets, uic
 from PyQt6.QtCore import QUrl
 from PyQt6.QtCore import QEvent
@@ -11,6 +12,7 @@ from PyQt6.QtCore import QDir, QModelIndex
 from PyQt6.QtGui import QDesktopServices
 from cryptography.fernet import Fernet
 from dotenv import load_dotenv
+from QComponents.ModifyPlainText import ModifyPlainTextWindow
 
 class PyFileExplorer(QtWidgets.QMainWindow):
         # User home directory on the system
@@ -52,7 +54,7 @@ class PyFileExplorer(QtWidgets.QMainWindow):
 
             # Setting up the File menu options
             self.CreateFolderMenuAction = self.MenuFile.addAction("Crear Carpeta")
-            self.CreateFolderDeleteMenuAction = self.MenuFile.addAction("Eliminar Carpeta")
+            self.DeleteFolderMenuAction = self.MenuFile.addAction("Eliminar Carpeta")
             self.PlainFileMenuAction = self.MenuFile.addAction("Crear Archivo Plano")
             self.ModifyPlainFileMenuAction = self.MenuFile.addAction("Modificar Archivo Plano")
             self.DeletePlainFileMenuAction = self.MenuFile.addAction("Eliminar Archivo Plano")
@@ -65,7 +67,7 @@ class PyFileExplorer(QtWidgets.QMainWindow):
             self.FileViewWidget.doubleClicked.connect(self.MouseDoubleClickOpenFileFolders)
             self.PlainFileMenuAction.triggered.connect(self.CreatePlainTextFile)
             self.CreateFolderMenuAction.triggered.connect(self.CreateFolder)
-            self.CreateFolderMenuAction.triggered.connect(self.DeleteFolder)
+            self.DeleteFolderMenuAction.triggered.connect(self.DeleteFolder)
             self.ModifyPlainFileMenuAction.triggered.connect(self.ModifyPlainTextFile)
             self.DeletePlainFileMenuAction.triggered.connect(self.DeleteFile)
             self.EncryptionPlainFileMenuAction.triggered.connect(self.EncryptPlainTextFile)
@@ -94,16 +96,38 @@ class PyFileExplorer(QtWidgets.QMainWindow):
                 with open(file_path, 'w') as new_file:
                     pass  
                 self.model.layoutChanged.emit()
+
+        def create_folder(self, foldername):
+            current_path = self.model.rootPath()
+            folder_path = os.path.join(current_path, foldername)
+            if not os.path.exists(folder_path):
+                os.mkdir(folder_path)
+            else:
+                QMessageBox.warning(self, "Advertencia", "El folder ya existe")
+            self.model.layoutChanged.emit()
         
+        def delete_folder(self, foldername):
+            current_path = self.model.rootPath()
+            folder_path = os.path.join(current_path, foldername)
+            if os.path.exists(folder_path):
+                shutil.rmtree(folder_path)
+            else:
+                QMessageBox.warning(self, f"El folder no existe")
+            self.model.layoutChanged.emit()
+
         def file_exists(self, filename):
             current_path = self.model.rootPath()
             file_path = os.path.join(current_path, filename)
             return os.path.exists(file_path)
 
         def modify_file(self, filename):
+            current_path = self.model.rootPath()
             if not self.file_exists(filename):
-                QMessageBox.warning(self, 'Archivo no encontrado', f'El archivo "{filename}" no existe en este directorio.')
-            return
+                QMessageBox.warning(self, "Advertencia", 'Archivo no encontrado', 'El archivo no existe en este directorio.')
+            else:
+                modify_window  = ModifyPlainTextWindow(current_path, filename)
+                modify_window.exec()
+
 
         def delete_file(self, filename):
             current_path = self.model.rootPath()
@@ -141,10 +165,15 @@ class PyFileExplorer(QtWidgets.QMainWindow):
                 self.create_file(filename)
 
         def CreateFolder(self):
-             print("Folder created")
+            foldername, ok = QInputDialog.getText(self, 'Crear Folder', 'Ingrese el nombre del folder:')
+            if ok and foldername:
+                self.create_folder(foldername)
 
         def DeleteFolder(self):
             print("Folder deleted")
+            foldername, ok = QInputDialog.getText(self, 'Borrar Folder', 'Ingrese el nombre del folder:')
+            if ok and foldername:
+                self.delete_folder(foldername)
         
         def ModifyPlainTextFile(self):
             print("File Modified")
@@ -207,6 +236,6 @@ class PyFileExplorer(QtWidgets.QMainWindow):
 if __name__ == "__main__":
     app = QtWidgets.QApplication(sys.argv)
     PyFileExplorer = PyFileExplorer()
-    PyFileExplorer.InitializeFernet()
+    # PyFileExplorer.InitializeFernet()
     PyFileExplorer.show()
     app.exec()
