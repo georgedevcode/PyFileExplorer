@@ -73,21 +73,6 @@ class PyFileExplorer(QtWidgets.QMainWindow):
             self.EncryptionPlainFileMenuAction.triggered.connect(self.EncryptPlainTextFile)
             self.DecryptionPlainFileMenuAction.triggered.connect(self.DecryptPlainTextFile)
             self.SeeFilesInvetoryMenuAction.triggered.connect(self.SeeFilesInvetory)
-        
-        # Initialzing the Fernet key
-        # This is needed in order to encrypt and decrypt the data
-        def InitializeFernet(self):
-            if load_dotenv():
-                enconded_key = os.environ.get("FERNET_KEY")
-                self.FERNET_KEY = enconded_key.encode()
-            else:
-               # Generate a new Fernet key
-                key= Fernet.generate_key()
-                self.FERNET_KEY = key.decode()
-                # Set the encoded key as an environment variable
-                os.environ["FERNET_KEY"]= self.FERNET_KEY
-                # os.environ['FERNET_KEY'] = self.FERNET_KEY
-            self.FERNET = Fernet(self.FERNET_KEY)
             
         def create_file(self, filename):
             current_path = self.model.rootPath()
@@ -159,7 +144,6 @@ class PyFileExplorer(QtWidgets.QMainWindow):
              self.FileViewWidget.setRootIndex(self.model.index(self.HOME_PATH))
         
         def CreatePlainTextFile(self):
-            print("File created")
             filename, ok = QInputDialog.getText(self, 'Crear Archivo', 'Ingrese el nombre del archivo:')
             if ok and filename:
                 self.create_file(filename)
@@ -170,36 +154,75 @@ class PyFileExplorer(QtWidgets.QMainWindow):
                 self.create_folder(foldername)
 
         def DeleteFolder(self):
-            print("Folder deleted")
             foldername, ok = QInputDialog.getText(self, 'Borrar Folder', 'Ingrese el nombre del folder:')
             if ok and foldername:
                 self.delete_folder(foldername)
         
         def ModifyPlainTextFile(self):
-            print("File Modified")
             filename, ok = QInputDialog.getText(self, 'Modificar Archivo', 'Ingrese el nombre del archivo a modificar:')
             if ok and filename:
                 self.modify_file(filename)
 
         def DeleteFile(self):
-            print("File Deleted")
             filename, ok = QInputDialog.getText(self, 'Eliminar Archivo', 'Ingrese el nombre del archivo a eliminar:')
             if ok and filename:
                 self.delete_file(filename)
+
+        # Initialzing the Fernet key
+        # This is needed in order to encrypt and decrypt the data
+        def InitializeFernet(self):
+            path = os.getcwd()
+            file_key = "FernetKey.txt"
+            key_path = os.path.join(path,file_key)
+
+            b_file_exists = os.path.exists(key_path)
+            
+            #File exists on directory
+            if b_file_exists:
+                #File is not empty
+                b_file_empty = os.stat(key_path).st_size != 0
+                if b_file_empty:
+                    #Let's read the file and retrive the fernet key
+                    with open(key_path, "r") as file:
+                        key = file.read()
+                        key = key.encode()
+            else:
+                #If there is not a file holding the key, then let's create the file and generate the fernet key
+                with open(key_path, "w") as file:
+                    key = Fernet.generate_key()
+                    file.write(key.decode("utf-8"))
+            self.FERNET = Fernet(key)
+            return self.FERNET
         
         def EncryptPlainTextFile(self):
-            print("File Encrypted")
-            filename, ok = QInputDialog.getText(self, 'Encriptar Archivo', 'Ingrese el nombre del archivo a encriptar:')
+            filename, ok = QInputDialog.getText(self, 'Eliminar Archivo', 'Ingrese el nombre del archivo a eliminar:')
             if ok and filename:
-                if self.file_exists(filename):
-                    with open(filename, 'wrb') as file:
-                        file_content = file.read()
-                        file_content_encrypted = self.FERNET.encrypt(file_content)
-                        file.write(file_content_encrypted)
-                        file.close()
+                path = self.model.rootPath()
+                full_file_path = os.path.join(path, filename)
+
+                with open(full_file_path, 'rb') as file:
+                    original_file = file.read()
+                
+                encrypted = self.FERNET.encrypt(original_file)
+
+                with open(full_file_path, 'wb') as encrypted_file:
+                    encrypted_file.write(encrypted)
+                    file.close()
 
         def DecryptPlainTextFile(self):
-             print("File Decrypted")
+            filename, ok = QInputDialog.getText(self, 'Eliminar Archivo', 'Ingrese el nombre del archivo a eliminar:')
+            if ok and filename:
+                path = self.model.rootPath()
+                full_file_path = os.path.join(path, filename)
+
+                with open(full_file_path, 'rb') as file:
+                    original_file = file.read()
+                
+                decrypted = self.FERNET.decrypt(original_file)
+
+                with open(full_file_path, 'wb') as dec_file:
+                    dec_file.write(decrypted )
+                    file.close()
         
         def SeeFilesInvetory(self):
              print("Showing Files Invetory")
@@ -236,6 +259,6 @@ class PyFileExplorer(QtWidgets.QMainWindow):
 if __name__ == "__main__":
     app = QtWidgets.QApplication(sys.argv)
     PyFileExplorer = PyFileExplorer()
-    # PyFileExplorer.InitializeFernet()
+    PyFileExplorer.InitializeFernet()
     PyFileExplorer.show()
     app.exec()
