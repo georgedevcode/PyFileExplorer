@@ -1,6 +1,7 @@
 import os
 import sys
 import shutil
+import subprocess as sbp
 from PyQt6 import QtCore, QtGui, QtWidgets, uic
 from PyQt6.QtCore import QUrl, QFileInfo
 from PyQt6.QtCore import QEvent
@@ -11,7 +12,6 @@ from PyQt6.QtWidgets import QApplication, QMainWindow, QListView, QMessageBox, Q
 from PyQt6.QtCore import QDir, QModelIndex
 from PyQt6.QtGui import QDesktopServices
 from cryptography.fernet import Fernet
-from dotenv import load_dotenv
 from QComponents.ModifyPlainText import ModifyPlainTextWindow
 
 class PyFileExplorer(QtWidgets.QMainWindow):
@@ -227,9 +227,10 @@ class PyFileExplorer(QtWidgets.QMainWindow):
         
         def SeeFilesInvetory(self):
              print("Showing Files Invetory")
+             sbp.Popen(["notepad.exe", "registro_documentos.txt"])
+
         
         def SaveFileOnInventory(self, filepath):
-            print("Saving File On Inventory")
             file_info = QFileInfo(filepath)
             file_name = file_info.fileName()
             file_dir = file_info.filePath()
