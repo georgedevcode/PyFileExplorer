@@ -8,3 +8,8 @@ Directorio: C:/Users/jocerdas/Prueba/Prueba 6.txt
 Creado en: Tue Aug 15 12:54:34 2023
 Ultima modificaion: Tue Aug 15 12:54:34 2023
 ================================
+Nombre Archivo: Prueba1.txt
+Directorio: C:/Users/jocerdas/Prueba/Prueba1.txt
+Creado en: Thu Aug 17 11:40:30 2023
+Ultima modificaion: Thu Aug 17 11:40:30 2023
+================================

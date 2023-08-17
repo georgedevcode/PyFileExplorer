@@ -13,6 +13,7 @@ from PyQt6 import QtCore, QtGui, QtWidgets, uic
 from QComponents.ModifyPlainText import ModifyPlainTextWindow
 from PyQt6.QtGui import QFileSystemModel, QMouseEvent, QDesktopServices, QPointingDevice
 from PyQt6.QtWidgets import QApplication, QMainWindow, QListView, QMessageBox, QMenu, QInputDialog
+
 class PyFileExplorer(QtWidgets.QMainWindow):
         # User home directory on the system
         HOME_PATH = Path.home().as_posix()
@@ -260,6 +261,7 @@ class PyFileExplorer(QtWidgets.QMainWindow):
                       self.FileViewWidget.setRowHidden(row, True)
                    else:
                       self.FileViewWidget.setRowHidden(row, False)
+                      found = True
             else:
                  current_path = self.model.rootPath()
                  self.model.setNameFilters([])
@@ -267,9 +269,9 @@ class PyFileExplorer(QtWidgets.QMainWindow):
                  self.FileViewWidget.setRootIndex(self.model.index(current_path))
                  for row in range(self.model.rowCount(self.FileViewWidget.rootIndex())):
                      self.FileViewWidget.setRowHidden(row, self.FileViewWidget.rootIndex(), False)      
-
                      #Falta corregir la búsqueda de documentos dentro de carpetas   
 
+        
 if __name__ == "__main__":
     app = QtWidgets.QApplication(sys.argv)
     PyFileExplorer = PyFileExplorer()
